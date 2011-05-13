@@ -1,0 +1,11 @@
+Installing pyfits & friends:
+
+Preliminary packages:
+
+> sudo apt-get install python-pip python-dev git
+
+This installs python's own package management system
+
+Now you can use pip to install python packages:
+
+> sudo pip install numpy pyfits xlrd
