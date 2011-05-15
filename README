@@ -2,10 +2,14 @@ Installing pyfits & friends:
 
 Preliminary packages:
 
-> sudo apt-get install python-pip python-dev git
+> sudo apt-get install python-pip python-dev python-scipy git
 
 This installs python's own package management system
 
 Now you can use pip to install python packages:
 
 > sudo pip install numpy pyfits xlrd
+
+Usage:
+
+> ./fitsproc.py <input> <ku|l> <sigma>

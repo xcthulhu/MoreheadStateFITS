@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import sys, os, pyfits, csv
+from scipy.ndimage import gaussian_filter
 import numpy as np
-from numpy import array as ar
 
 def getData(filename):
     "Gets RA, DEC, LST, and Voltage data from a filename"
@@ -16,11 +16,11 @@ def getData(filename):
     # Extract RA, DEC, LST, and Voltage from the raw data
     # We use a list comprehension
     ra,dec,lst,voltage = np.transpose(
-        ar([ar([float(row[0]),
-                float(row[1]),
-                float(row[2]),
-                float(row[3])]) 
-            for row in data]))
+        np.array([np.array([float(row[0]),
+                            float(row[1]),
+                            float(row[2]),
+                            float(row[3])]) 
+                  for row in data]))
 
     # Close filepointer and return
     fp.close()
@@ -41,15 +41,17 @@ def celestialToImage(ra,dec,voltage,cdelt=1):
     # which correspond to the lower left hand corner
     raref, decref = min(ra), min(dec)
 
-    # The 
+    # The size of an edge of the image (forced to be square)
     sz = int(np.ceil(max((max(ra)-raref),(max(dec)-decref))*cdelt))
+
+    # Create an image from the data
     img = np.zeros((sz,sz),np.float64)
     for (r, d, v) in zip(ra,dec,voltage):
         img[cdelt*(r-raref),cdelt*(d-decref)] = v
 
     return (raref,decref,sz,img)
 
-def fitsProc(filename,bandname):
+def fitsProc(filename,bandname,sigma):
     "Makes a FITS file from a filename with a specified bandwidth"
 
     # Determine the band from the bandname argument
@@ -71,6 +73,9 @@ def fitsProc(filename,bandname):
 
     # Make the image
     raref,decref,sz,img = celestialToImage(ra,dec,voltage,cdelt)
+
+    # Apply a Guassian Filter
+    img = gaussian_filter(img, sigma=(sigma, sigma), mode='constant', cval=0.0)
 
     # Create the abstract FITS file from the image
     hdu=pyfits.PrimaryHDU(img)
@@ -103,11 +108,15 @@ def fitsProc(filename,bandname):
     else:
         newfn = filename.replace(ext,'.fits')
 
+    # Avoid file collisions by simple loop
+    while os.path.isfile(newfn):
+        newfn = newfn.replace('.fits', '.0.fits')
+
     # Write fits file output
     hdulist.writeto(newfn)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3 or any([x == "--help" for x in sys.argv]):
-        sys.exit("Usage: %s <input> <ku|l>" % sys.argv[0])
-    fitsProc(sys.argv[1],sys.argv[2])
+    if len(sys.argv) != 4 or any([x == "--help" for x in sys.argv]):
+        sys.exit("Usage: %s <input> <ku|l> <sigma>" % sys.argv[0])
+    fitsProc(sys.argv[1],sys.argv[2],float(sys.argv[3]))
