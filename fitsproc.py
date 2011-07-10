@@ -16,10 +16,10 @@ def getData(filename):
     # Extract RA, DEC, LST, and Voltage from the raw data
     # We use a list comprehension
     ra,dec,lst,voltage = np.transpose(
-        np.array([np.array([float(row[0]),
-                            float(row[1]),
-                            float(row[2]),
-                            float(row[3])]) 
+        np.array([np.array([float(row[14]),
+                            float(row[15]),
+                            float(row[16]),
+                            float(row[17])]) 
                   for row in data]))
 
     # Close filepointer and return
