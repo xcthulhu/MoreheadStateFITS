@@ -1,0 +1,25 @@
+<html><title>Upload Data for Processing and Archiving</title>
+<body>
+<form enctype="multipart/form-data"
+method=post
+action="cgi-bin/procFile.py">
+<h1>Upload Data for Processing and Archiving</h1>
+<P><TABLE>
+  <TR>
+    <TH align=right>File:
+    <TD><input type=file size=50 name=clientfile>
+  <TR>
+    <TH align=right>Band:
+    <TD><table>
+          <td><input type=radio name=band value=KU CHECKED>KU
+          <td><input type=radio name=band value=L>L
+        </table>
+  <TR>
+    <TH align=right>Sigma:
+    <TD><input type=text value="1" name=sigma onblur="if (this.value == '') {this.value = '1';}"  onfocus="if (this.value == '1') {this.value = '';}" /> (standard deviation for Gaussian filter)
+</TABLE>
+
+<p><input type=submit value=Process>
+</form>
+<hr><a href="cgi-bin/viewScript.py?filename=procFile.py">View script code</a>
+</body></html>

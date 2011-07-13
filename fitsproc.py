@@ -4,6 +4,9 @@ import sys, os, pyfits, csv
 from scipy.ndimage import gaussian_filter
 import numpy as np
 
+def test():
+	print "test"
+
 def getData(filename):
     "Gets RA, DEC, LST, and Voltage data from a filename"
     # Load the tsv file
@@ -51,7 +54,7 @@ def celestialToImage(ra,dec,voltage,cdelt=1):
 
     return (raref,decref,sz,img)
 
-def fitsProc(filename,bandname,sigma):
+def fitsProc(filename,bandname,sigma,newfn=""):
     "Makes a FITS file from a filename with a specified bandwidth"
 
     # Determine the band from the bandname argument
@@ -102,11 +105,12 @@ def fitsProc(filename,bandname,sigma):
     hdulist.verify()
 
     # Get new datafile name from filename
-    ext = os.path.splitext(filename)[1]
-    if ext == '':
-        newfn = filename + '.fits'
-    else:
-        newfn = filename.replace(ext,'.fits')
+    if newfn == "":
+       ext = os.path.splitext(filename)[1]
+       if ext == '':
+          newfn = filename + '.fits'
+       else:
+          newfn = filename.replace(ext,'.fits')
 
     # Avoid file collisions by simple loop
     while os.path.isfile(newfn):
