@@ -10,6 +10,14 @@ Now you can use pip to install python packages:
 
 > sudo pip install numpy pyfits xlrd
 
-Usage:
+- Command Line Usage:
 
 > ./fitsproc.py <input> <ku|l> <sigma>
+
+- Installation
+
+To install the entire system (ideal for fresh system):
+> sudo make dist-install
+
+To only install the CGI scripts (less destructive)
+> sudo make dist-install
